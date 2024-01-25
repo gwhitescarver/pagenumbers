@@ -18,7 +18,7 @@
                 document.querySelector('input[name="textLayerName"]').
                     value = event.data.pluginMessage.textLayerName;
             }
-            document.getElementById('runPlugin').onclick = function() {
+            document.getElementById('runPlugin').onclick = function(e) {
                 var ignoreNonFrameNodes = document.querySelector('input[name="ignoreNonFrameNodes"]').checked;
                 var leadingZeros = document.querySelector('select[name="leadingZeros"]').value;
                 var numberNodes = document.querySelector('input[name="numberNodes"]').checked;
@@ -33,6 +33,7 @@
                     rememberSettings: rememberSettings,
                     textLayerName: textLayerName
                 } }, '*')
+                e.preventDefault();
             }
         }
     </script>

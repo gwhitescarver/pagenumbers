@@ -33,6 +33,10 @@ class PageNumberer {
       figma.clientStorage.deleteAsync('pageNumbererSettings')
     }
     this.buildFrameMatrix()
+    figma.on('documentchange', () => {
+      console.log('page changed')
+      //figma.notify('Page changed')
+    })
   }
 
   public buildFrameMatrix() {
@@ -60,13 +64,12 @@ class PageNumberer {
     })
   }
 
-  public updatePageNumbersAndFinish() {
+  public updatePageNumbers() {
     var pageNumber = 1
     var fontsToLoad: FontName[] = []
     for (var selection of this.selectedNodeMatrix) {
       //@ts-expect-error
       selection.selectedNode.parent?.insertChild(this.lowestIndex, selection.selectedNode)
-      debugger
       if (this.numberSelectedNodes) {
         if (selection.selectedNode.name.match(/^\d*$/)){
           selection.selectedNode.name = pageNumber.toString()
@@ -92,7 +95,9 @@ class PageNumberer {
     // text is set only after all fonts are loaded
     Promise.all(fontPromises).then(() => {
         this.layersToNumber.map(l => this.setTextOfNode(l.layer, this.optionalPrefix, l.number.toString()))
-        figma.closePlugin();
+        console.log("hiding UI")
+        figma.ui.hide()
+        //figma.closePlugin();
     })
   }
 
@@ -143,7 +148,7 @@ figma.ui.onmessage = (message) => {
       message.rememberSettings,
       message.textLayerName
     )
-    pageNumberer.updatePageNumbersAndFinish()
+    pageNumberer.updatePageNumbers()
   }
   else
   {
